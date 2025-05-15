@@ -1,0 +1,817 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AlloExpert - Assistance Technique Multilingue</title>
+    <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" as="style" onload="this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"></noscript>
+    <style>
+        :root {
+            --primary: #D45B00;
+            --secondary: #CC5500;
+            --accent: #FFA500;
+            --light: #FFF8F0;
+            --dark: #222222;
+            --success: #28a745;
+            --warning: #ffc107;
+            --danger: #dc3545;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: var(--light);
+            color: var(--dark);
+            line-height: 1.6;
+        }
+        
+        header {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 2rem 0;
+            text-align: center;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
+        
+        .language-bar {
+            background: var(--dark);
+            padding: 0.5rem 1rem;
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+        }
+        
+        .language-btn {
+            color: white;
+            background: none;
+            border: none;
+            cursor: pointer;
+            opacity: 0.7;
+            transition: opacity 0.3s;
+        }
+        
+        .language-btn:hover, .language-btn.active {
+            opacity: 1;
+            text-decoration: underline;
+        }
+        
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin: 3rem 0;
+        }
+        
+        .service-card {
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+        }
+        
+        .service-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .service-image {
+            height: 160px;
+            background-size: cover;
+            background-position: center;
+        }
+        
+        .service-content {
+            padding: 1.5rem;
+        }
+        
+        .form-section {
+            background: white;
+            border-radius: 10px;
+            padding: 2rem;
+            margin: 3rem 0;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+        
+        select, input, textarea {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            font-size: 1rem;
+        }
+        
+        button {
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            font-size: 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 107, 0, 0.3);
+        }
+        
+        #result {
+            margin-top: 1.5rem;
+            padding: 1.5rem;
+            background: #e8f4fc;
+            border-radius: 8px;
+            display: none;
+        }
+        
+        .testimonials-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+        
+        .testimonial-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+        
+        .contact-footer {
+            background: var(--dark);
+            color: white;
+            padding: 2rem 0;
+            text-align: center;
+        }
+        
+        .contact-info {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin: 1rem 0;
+            flex-wrap: wrap;
+        }
+        
+        .contact-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+        
+        .social-links a {
+            color: white;
+            font-size: 1.5rem;
+        }
+        
+        .admin-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.9);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .admin-panel {
+            background: white;
+            padding: 2rem;
+            border-radius: 8px;
+            width: 90%;
+            max-width: 800px;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        
+        .admin-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+        
+        .hidden {
+            display: none;
+        }
+
+        .error-message {
+            color: var(--danger) !important;
+            display: block;
+            font-size: 0.8rem;
+            margin-top: 0.3rem;
+        }
+        
+        [aria-hidden="true"] {
+            pointer-events: none;
+        }
+        
+        .star-rating {
+            color: var(--warning);
+        }
+
+        @media (max-width: 768px) {
+            .services-grid, .testimonials-grid, .admin-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Barre de langue -->
+    <div class="language-bar">
+        <button class="language-btn active" data-lang="fr" aria-label="Changer langue en français">
+            <span aria-hidden="true">Français</span>
+        </button>
+        <button class="language-btn" data-lang="en" aria-label="Change language to English">
+            <span aria-hidden="true">English</span>
+        </button>
+        <button class="language-btn" data-lang="sw" aria-label="Badilisha lugha kuwa Kiswahili">
+            <span aria-hidden="true">Swahili</span>
+        </button>
+    </div>
+
+    <!-- En-tête -->
+    <header>
+        <div class="container">
+            <h1><i class="fas fa-tools"></i> <span data-translate="appName">AlloExpert</span></h1>
+            <p data-translate="header">Votre solution technique en moins de 2 heures</p>
+        </div>
+    </header>
+
+    <!-- Services -->
+    <section class="container">
+        <h2 style="text-align: center; margin-bottom: 2rem;" data-translate="ourServices">Nos Services</h2>
+        
+        <div class="services-grid">
+            <div class="service-card">
+                <div class="service-image" style="background-image: url('https://images.unsplash.com/photo-1605152276897-4f618f831968?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80');"></div>
+                <div class="service-content">
+                    <h3><i class="fas fa-bolt"></i> <span data-translate="electrician">Électricien</span></h3>
+                    <p data-translate="electricianDesc">Dépannage, installation et mise aux normes</p>
+                </div>
+            </div>
+            
+            <div class="service-card">
+                <div class="service-image" style="background-image: url('https://images.unsplash.com/photo-1600596542725-8a950dcb1919?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80');"></div>
+                <div class="service-content">
+                    <h3><i class="fas fa-tint"></i> <span data-translate="plumber">Plombier</span></h3>
+                    <p data-translate="plumberDesc">Fuites, canalisations bouchées, installation sanitaire</p>
+                </div>
+            </div>
+            
+            <div class="service-card">
+                <div class="service-image" style="background-image: url('https://images.unsplash.com/photo-1581094271901-8022df4466f9?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80');"></div>
+                <div class="service-content">
+                    <h3><i class="fas fa-satellite-dish"></i> <span data-translate="antenna">Antenniste</span></h3>
+                    <p data-translate="antennaDesc">Installation et réparation TV/Satellite</p>
+                </div>
+            </div>
+            
+            <div class="service-card">
+                <div class="service-image" style="background-image: url('https://images.unsplash.com/photo-1582268611958-ebfd161ef9cf?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80');"></div>
+                <div class="service-content">
+                    <h3><i class="fas fa-paint-roller"></i> <span data-translate="painter">Peintre</span></h3>
+                    <p data-translate="painterDesc">Peinture intérieure et extérieure</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Formulaire -->
+    <section class="container">
+        <div class="form-section">
+            <h2><i class="fas fa-calendar-check"></i> <span data-translate="requestTitle">Demande d'intervention</span></h2>
+            <p data-translate="requestSubtitle">Remplissez ce formulaire pour un service rapide et professionnel</p>
+            
+            <form id="serviceForm">
+                <div class="form-group">
+                    <label for="service"><i class="fas fa-concierge-bell"></i> <span data-translate="serviceType">Type de service</span> :</label>
+                    <select id="service" required>
+                        <option value="">-- <span data-translate="select">Sélectionnez</span> --</option>
+                        <option value="electrician" data-translate="electrician">Électricien</option>
+                        <option value="plumber" data-translate="plumber">Plombier</option>
+                        <option value="antenna" data-translate="antenna">Antenniste</option>
+                        <option value="painter" data-translate="painter">Peintre</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="name"><i class="fas fa-user"></i> <span data-translate="fullName">Nom complet</span> :</label>
+                    <input type="text" id="name" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="phone"><i class="fas fa-phone"></i> <span data-translate="phone">Téléphone</span> :</label>
+                    <input type="tel" id="phone" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="email"><i class="fas fa-envelope"></i> <span data-translate="email">Email</span> (optionnel) :</label>
+                    <input type="email" id="email">
+                </div>
+
+                <div class="form-group">
+                    <label for="appointment"><i class="fas fa-calendar-day"></i> <span data-translate="preferredDate">Date souhaitée</span> :</label>
+                    <input type="datetime-local" id="appointment">
+                </div>
+
+                <div class="form-group">
+                    <label for="description"><i class="fas fa-comment-dots"></i> <span data-translate="description">Description</span> :</label>
+                    <textarea id="description" rows="4" data-translate="descriptionPlaceholder" placeholder="Décrivez votre problème en détail" required></textarea>
+                </div>
+
+                <button type="submit">
+                    <i class="fas fa-paper-plane"></i> <span data-translate="submitRequest">Envoyer la demande</span>
+                </button>
+            </form>
+
+            <div id="result"></div>
+        </div>
+    </section>
+
+    <!-- Témoignages -->
+    <section class="container">
+        <h2 style="text-align: center; margin: 2rem 0;" data-translate="testimonials">Avis Clients</h2>
+        
+        <div class="testimonials-grid">
+            <div class="testimonial-card">
+                <div style="display: flex; align-items: center; margin-bottom: 1rem;">
+                    <img src="https://randomuser.me/api/portraits/women/43.jpg" alt="Client" style="width: 50px; height: 50px; border-radius: 50%; margin-right: 1rem;">
+                    <div>
+                        <h4>Sophie D.</h4>
+                        <div class="star-rating">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                        </div>
+                    </div>
+                </div>
+                <p data-translate="testimonial1">"L'électricien est arrivé en moins d'une heure. Professionnel et efficace !"</p>
+            </div>
+            
+            <div class="testimonial-card">
+                <div style="display: flex; align-items: center; margin-bottom: 1rem;">
+                    <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="Client" style="width: 50px; height: 50px; border-radius: 50%; margin-right: 1rem;">
+                    <div>
+                        <h4>Marc L.</h4>
+                        <div class="star-rating">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star-half-alt"></i>
+                        </div>
+                    </div>
+                </div>
+                <p data-translate="testimonial2">"Problème de plomberie résolu en 30 minutes. Je recommande !"</p>
+            </div>
+            
+            <div class="testimonial-card">
+                <div style="display: flex; align-items: center; margin-bottom: 1rem;">
+                    <img src="https://randomuser.me/api/portraits/women/65.jpg" alt="Client" style="width: 50px; height: 50px; border-radius: 50%; margin-right: 1rem;">
+                    <div>
+                        <h4>Julie M.</h4>
+                        <div class="star-rating">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="far fa-star"></i>
+                        </div>
+                    </div>
+                </div>
+                <p data-translate="testimonial3">"Peinture de mon salon réalisée avec soin. Résultat impeccable."</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="contact-footer">
+        <div class="container">
+            <h3><i class="fas fa-tools"></i> <span data-translate="appName">AlloExpert</span></h3>
+            
+            <div class="contact-info">
+                <div class="contact-item">
+                    <i class="fas fa-phone"></i>
+                    <span id="footer-phone">+243 000 000 000</span>
+                </div>
+                <div class="contact-item">
+                    <i class="fas fa-envelope"></i>
+                    <span id="footer-email">contact@alloexpert.cd</span>
+                </div>
+                <div class="contact-item">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <span id="footer-address">Kinshasa, RDC</span>
+                </div>
+            </div>
+            
+            <div class="social-links">
+                <a href="#" id="social-fb"><i class="fab fa-facebook"></i></a>
+                <a href="#" id="social-wa"><i class="fab fa-whatsapp"></i></a>
+                <a href="#" id="social-ig"><i class="fab fa-instagram"></i></a>
+            </div>
+            
+            <div style="margin-top: 1rem;">
+                <a href="#" id="admin-login-btn" style="color: var(--accent); border: 1px solid var(--accent); padding: 0.5rem 1rem; border-radius: 4px;">
+                    <i class="fas fa-lock"></i> <span data-translate="adminArea">Espace Admin</span>
+                </a>
+            </div>
+            
+            <p style="margin-top: 1rem;">&copy; <span id="current-year">2023</span> <span data-translate="appName">AlloExpert</span>. <span data-translate="allRights">Tous droits réservés</span>.</p>
+        </div>
+    </footer>
+
+    <!-- Panel Admin -->
+    <div id="admin-modal" class="admin-modal">
+        <div class="admin-panel">
+            <h2><i class="fas fa-cog"></i> <span data-translate="adminTitle">Administration AlloExpert</span></h2>
+            
+            <div class="admin-grid">
+                <div>
+                    <h3 data-translate="contactInfo">Coordonnées</h3>
+                    <div class="form-group">
+                        <label data-translate="phone">Téléphone :</label>
+                        <input type="text" id="admin-phone">
+                    </div>
+                    <div class="form-group">
+                        <label data-translate="email">Email :</label>
+                        <input type="email" id="admin-email">
+                    </div>
+                    <div class="form-group">
+                        <label data-translate="address">Adresse :</label>
+                        <textarea id="admin-address" rows="2"></textarea>
+                    </div>
+                </div>
+                
+                <div>
+                    <h3 data-translate="socialMedia">Réseaux sociaux</h3>
+                    <div class="form-group">
+                        <label>Facebook :</label>
+                        <input type="url" id="admin-facebook">
+                    </div>
+                    <div class="form-group">
+                        <label>WhatsApp :</label>
+                        <input type="url" id="admin-whatsapp">
+                    </div>
+                    <div class="form-group">
+                        <label>Instagram :</label>
+                        <input type="url" id="admin-instagram">
+                    </div>
+                </div>
+            </div>
+            
+            <h3 data-translate="customerReviews">Avis clients</h3>
+            <div id="reviews-container" style="max-height: 200px; overflow-y: auto; margin-bottom: 1rem; border: 1px solid #eee; padding: 0.5rem; border-radius: 4px;">
+                <!-- Les avis seront chargés ici -->
+            </div>
+            
+            <div style="display: flex; gap: 1rem;">
+                <button id="admin-save" style="background: var(--success);">
+                    <i class="fas fa-save"></i> <span data-translate="save">Sauvegarder</span>
+                </button>
+                <button id="admin-logout" style="background: var(--danger);">
+                    <i class="fas fa-sign-out-alt"></i> <span data-translate="logout">Déconnexion</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ======================
+        // CONFIGURATION COMPLÈTE
+        // ======================
+        const config = {
+            contacts: {
+                phone: "+243 000 000 000",
+                email: "contact@alloexpert.cd",
+                address: "Kinshasa, RDC"
+            },
+            socials: {
+                facebook: "https://facebook.com/alloexpert",
+                whatsapp: "https://wa.me/243000000000",
+                instagram: "https://instagram.com/alloexpert"
+            },
+            admins: [
+                { 
+                    username: "admin", 
+                    // Mot de passe hashé pour "Admin123!" (à générer en production)
+                    passwordHash: "$2a$10$N9qo8uLOickgx2ZMRZoMy.MH/rH4qh7Wq9a5nY/wEBd.s1ITKZRqC" 
+                }
+            ],
+            services: [
+                { id: "electrician", name: "Électricien" },
+                { id: "plumber", name: "Plombier" },
+                { id: "antenna", name: "Antenniste" },
+                { id: "painter", name: "Peintre" }
+            ],
+            reviews: [
+                { id: 1, technician: "Jean K.", rating: 5, comment: "Excellent service!", client: "Sophie D.", date: "2023-10-15" },
+                { id: 2, technician: "Paul M.", rating: 4, comment: "Problème résolu rapidement", client: "Marc L.", date: "2023-10-10" },
+                { id: 3, technician: "Lucie T.", rating: 4, comment: "Travail soigné et professionnel", client: "Julie M.", date: "2023-10-05" }
+            ]
+        };
+
+        // ======================
+        // SYSTÈME DE TRADUCTION
+        // ======================
+        const translations = {
+            fr: {
+                appName: "AlloExpert",
+                header: "Votre solution technique en moins de 2 heures",
+                ourServices: "Nos Services",
+                electrician: "Électricien",
+                electricianDesc: "Dépannage, installation et mise aux normes",
+                plumber: "Plombier",
+                plumberDesc: "Fuites, canalisations bouchées, installation sanitaire",
+                antenna: "Antenniste",
+                antennaDesc: "Installation et réparation TV/Satellite",
+                painter: "Peintre",
+                painterDesc: "Peinture intérieure et extérieure",
+                requestTitle: "Demande d'intervention",
+                requestSubtitle: "Remplissez ce formulaire pour un service rapide et professionnel",
+                serviceType: "Type de service",
+                select: "Sélectionnez",
+                fullName: "Nom complet",
+                phone: "Téléphone",
+                email: "Email",
+                preferredDate: "Date souhaitée",
+                description: "Description",
+                descriptionPlaceholder: "Décrivez votre problème en détail",
+                submitRequest: "Envoyer la demande",
+                testimonials: "Avis Clients",
+                testimonial1: "L'électricien est arrivé en moins d'une heure. Professionnel et efficace !",
+                testimonial2: "Problème de plomberie résolu en 30 minutes. Je recommande !",
+                testimonial3: "Peinture de mon salon réalisée avec soin. Résultat impeccable.",
+                adminArea: "Espace Admin",
+                allRights: "Tous droits réservés",
+                adminTitle: "Administration AlloExpert",
+                contactInfo: "Coordonnées",
+                address: "Adresse",
+                socialMedia: "Réseaux sociaux",
+                customerReviews: "Avis clients",
+                save: "Sauvegarder",
+                logout: "Déconnexion",
+                phoneError: "Numéro de téléphone invalide",
+                requestSuccess: "Demande envoyée !",
+                requestSuccessMsg: "Un technicien vous contactera sous peu. Vous recevrez un SMS pour évaluer le service après intervention.",
+                error: "Erreur",
+                errorMsg: "Une erreur est survenue. Veuillez réessayer ou nous contacter directement."
+            },
+            en: {
+                appName: "AlloExpert",
+                header: "Your technical solution in less than 2 hours",
+                ourServices: "Our Services",
+                electrician: "Electrician",
+                electricianDesc: "Troubleshooting, installation and standardization",
+                plumber: "Plumber",
+                plumberDesc: "Leaks, clogged pipes, sanitary installation",
+                antenna: "Antenna Technician",
+                antennaDesc: "TV/Satellite installation and repair",
+                painter: "Painter",
+                painterDesc: "Interior and exterior painting",
+                requestTitle: "Service Request",
+                requestSubtitle: "Fill out this form for fast and professional service",
+                serviceType: "Service type",
+                select: "Select",
+                fullName: "Full name",
+                phone: "Phone",
+                email: "Email",
+                preferredDate: "Preferred date",
+                description: "Description",
+                descriptionPlaceholder: "Describe your problem in detail",
+                submitRequest: "Submit request",
+                testimonials: "Customer Reviews",
+                testimonial1: "The electrician arrived in less than an hour. Professional and efficient!",
+                testimonial2: "Plumbing problem solved in 30 minutes. I recommend!",
+                testimonial3: "My living room was painted carefully. Perfect result.",
+                adminArea: "Admin Area",
+                allRights: "All rights reserved",
+                adminTitle: "AlloExpert Administration",
+                contactInfo: "Contact Information",
+                address: "Address",
+                socialMedia: "Social Media",
+                customerReviews: "Customer Reviews",
+                save: "Save",
+                logout: "Logout",
+                phoneError: "Invalid phone number",
+                requestSuccess: "Request sent!",
+                requestSuccessMsg: "A technician will contact you shortly. You will receive an SMS to evaluate the service after the intervention.",
+                error: "Error",
+                errorMsg: "An error occurred. Please try again or contact us directly."
+            },
+            sw: {
+                appName: "AlloExpert",
+                header: "Suluhisho la kiufundi chini ya saa 2",
+                ourServices: "Huduma Zetu",
+                electrician: "Umeme",
+                electricianDesc: "Kutambua na kurekebisha hitilafu, usanikishaji na kufuata viwango",
+                plumber: "Mfanyikazi wa bomba",
+                plumberDesc: "Kuvuja, mabomba yaliyozibika, usanikishaji wa vifaa vya usafi",
+                antenna: "Fundi wa Antena",
+                antennaDesc: "Usanikishaji na urekebishaji wa TV/Satellite",
+                painter: "Mchoraji",
+                painterDesc: "Upakaji wa ndani na nje",
+                requestTitle: "Ombi la Huduma",
+                requestSubtitle: "Jaza fomu hii kwa huduma ya haraka na ya kikazi",
+                serviceType: "Aina ya huduma",
+                select: "Chagua",
+                fullName: "Jina kamili",
+                phone: "Simu",
+                email: "Barua pepe",
+                preferredDate: "Tarehe unayopendelea",
+                description: "Maelezo",
+                descriptionPlaceholder: "Eleza tatizo lako kwa undani",
+                submitRequest: "Tuma ombi",
+                testimonials: "Maoni ya Wateja",
+                testimonial1: "Fundi wa umeme alifika chini ya saa moja. Mtaalamu na mwenye ufanisi!",
+                testimonial2: "Tatizo la bomba lilimalizika kwa dakika 30. Napendekeza!",
+                testimonial3: "Sebule yangu ilipakwa kwa uangalifu. Matokeo bora.",
+                adminArea: "Eneo la Msimamizi",
+                allRights: "Haki zote zimehifadhiwa",
+                adminTitle: "Usimamizi wa AlloExpert",
+                contactInfo: "Maelezo ya Mawasiliano",
+                address: "Anwani",
+                socialMedia: "Mitandao ya Kijamii",
+                customerReviews: "Maoni ya Wateja",
+                save: "Hifadhi",
+                logout: "Ondoka",
+                phoneError: "Nambari ya simu si sahihi",
+                requestSuccess: "Ombi limewasilishwa!",
+                requestSuccessMsg: "Fundi atawasiliana nawe hivi karibuni. Utapokea SMS ya kutathmini huduma baada ya utekelezaji.",
+                error: "Hitilafu",
+                errorMsg: "Kuna hitilafu imetokea. Tafadhali jaribu tena au wasiliana nasi moja kwa moja."
+            }
+        };
+
+        let currentLang = 'fr';
+
+        function setLanguage(lang) {
+            currentLang = lang;
+            document.querySelectorAll('[data-translate]').forEach(element => {
+                const key = element.getAttribute('data-translate');
+                if (translations[lang][key]) {
+                    if (element.tagName === 'INPUT' || element.tagName === 'TEXTAREA') {
+                        element.placeholder = translations[lang][key];
+                    } else if (element.tagName === 'OPTION') {
+                        element.textContent = translations[lang][key];
+                    } else {
+                        element.textContent = translations[lang][key];
+                    }
+                }
+            });
+            
+            // Mettre à jour le sélecteur de date
+            const appointmentField = document.getElementById('appointment');
+            if (appointmentField) {
+                appointmentField.setAttribute('aria-label', translations[lang].preferredDate || 'Preferred date');
+            }
+        }
+
+        // ======================
+        // VALIDATION DE FORMULAIRE
+        // ======================
+        function validateForm() {
+            let isValid = true;
+            const phone = document.getElementById('phone').value;
+            
+            // Validation du téléphone
+            if (!/^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/.test(phone)) {
+                showFieldError('phone', translations[currentLang].phoneError);
+                isValid = false;
+            } else {
+                clearFieldError('phone');
+            }
+            
+            // Validation du nom
+            if (document.getElementById('name').value.trim().length < 2) {
+                showFieldError('name', translations[currentLang].nameError || "Nom trop court");
+                isValid = false;
+            } else {
+                clearFieldError('name');
+            }
+            
+            // Validation du service
+            if (document.getElementById('service').value === "") {
+                showFieldError('service', translations[currentLang].serviceError || "Sélectionnez un service");
+                isValid = false;
+            } else {
+                clearFieldError('service');
+            }
+            
+            return isValid;
+        }
+
+        function showFieldError(fieldId, message) {
+            const field = document.getElementById(fieldId);
+            field.style.borderColor = 'var(--danger)';
+            
+            let errorElement = field.nextElementSibling;
+            if (!errorElement || !errorElement.classList.contains('error-message')) {
+                errorElement = document.createElement('small');
+                errorElement.classList.add('error-message');
+                errorElement.setAttribute('role', 'alert');
+                field.parentNode.insertBefore(errorElement, field.nextSibling);
+            }
+            
+            errorElement.textContent = message;
+            errorElement.style.color = 'var(--danger)';
+        }
+
+        function clearFieldError(fieldId) {
+            const field = document.getElementById(fieldId);
+            field.style.borderColor = '#e9ecef';
+            
+            const errorElement = field.nextElementSibling;
+            if (errorElement && errorElement.classList.contains('error-message')) {
+                errorElement.remove();
+            }
+        }
+
+        // ======================
+        // GESTION DES DEMANDES
+        // ======================
+        document.getElementById("serviceForm").addEventListener("submit", async function(e) {
+            e.preventDefault();
+            
+            if (!validateForm()) return;
+            
+            const requestData = {
+                service: document.getElementById("service").value,
+                serviceName: document.getElementById("service").options[document.getElementById("service").selectedIndex].text,
+                client: {
+                    name: document.getElementById("name").value,
+                    phone: document.getElementById("phone").value,
+                    email: document.getElementById("email").value || null
+                },
+                description: document.getElementById("description").value,
+                appointment: document.getElementById("appointment").value,
+                language: currentLang,
+                date: new Date().toISOString()
+            };
+            
+            try {
+                const response = await submitServiceRequest(requestData);
+                
+                if (response.success) {
+                    showConfirmation(requestData.client.phone);
+                    if ('serviceWorker' in navigator && 'PushManager' in window) {
+                        showNotification(translations[currentLang].requestSuccess);
+                    }
+                    document.getElementById("serviceForm").reset();
+                }
+            } catch (error) {
+                showError();
+            }
+        });
+
+        async function submitServiceRequest(data) {
+            // En production, remplacer par un vrai appel API
+            console.log("Données de demande:", data);
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            
+            return { 
+                success: true, 
+                requestId: "REQ-" + Math.random().toString(36).substr(2, 9).toUpperCase() 
+            };
+        }
+
+        function showConfirmation(phone) {
+            document.getElementById('result').innerHTML = `
+                <h3 style="color: var(--success);"><i class="fas fa-check-circle"></i
